@@ -142,4 +142,34 @@ app.post('/signup', (req, res) => {
         })
 }) // validates if user already exists. If new user, return a token, if user already exist throw an error
 
+app.post('/login', (req,res) => {
+    const user = {
+        email: req.body.email,
+        password: req.body.password
+    } //creates a login route, that takes an object with email and password
+
+    let errors = {};
+
+    if(isEmpty(user.email)) errors.email = 'Must not be empty';
+    if(isEmpty(user.password)) errors.password = 'Must not be empty';
+    if(Object.keys(errors).length > 0) return res.status(400).json(errors);
+    // validate if the email and password contain data
+
+    firebase.auth().signInWithEmailAndPassword(user.email, user.password)
+        .then(data => {
+            return data.user.getIdToken();
+        })
+        .then(token => {
+            return res.json({token});
+        })
+        .catch(err => {
+            console.error(err);
+            if(err.code === 'auth/wrong-password'){
+                return res.status(403).json({ general: 'Wrong credentials, please try again'});
+            } else {
+                return res.status(500).json({ error: err.code })
+            }
+        }) // login the user using firebase.auth().signInWithEmailAndPassword(user.email, user.password). If successful return a token, if failed provide an error
+})
+
 exports.api = functions.region('europe-west1').https.onRequest(app); // will automatically transform into multiple routes
