@@ -9,7 +9,7 @@ const isEmpty = (string) => {
     else return false;
 } // helper method to check if handle is empty (removes possible white spaces first)
 
-exports.validateSignUpData = (data) => {
+exports.validateSignupData = (data) => {
     let errors = {}; // initialize error object
 
     if(isEmpty(data.email)) {
@@ -22,7 +22,7 @@ exports.validateSignUpData = (data) => {
         errors.password = 'Must not be empty'
     } // create error for empty password
     
-    if(newUser.password !== data.confirmPassword){
+    if(data.password !== data.confirmPassword){
         errors.confirmPassword = 'Passwords must match'
     } // create error for non matching passwords
     
