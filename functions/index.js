@@ -3,8 +3,18 @@ const app = require("express")();
 
 const FBAuth = require('./util/fbAuth')
 
-const { getAllScreams, postOneScream } = require('./handlers/screams');
-const { signup, login, uploadImage, addUserDetails } = require('./handlers/users');
+const {
+    getAllScreams,
+    postOneScream
+} = require('./handlers/screams');
+
+const { 
+    signup,
+    login,
+    uploadImage,
+    addUserDetails,
+    getAuthenticatedUser
+} = require('./handlers/users');
 
 const { db } = require('./util/admin');
 
@@ -20,5 +30,6 @@ app.post('/signup', signup ) // validates if user already exists. If new user, r
 app.post('/login', login )
 app.post('/user/image', FBAuth, uploadImage)
 app.post('/user', FBAuth, addUserDetails)
+app.get('/user', FBAuth, getAuthenticatedUser)
 
 exports.api = functions.region('europe-west1').https.onRequest(app); // will automatically transform into multiple routes

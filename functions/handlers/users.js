@@ -6,6 +6,7 @@ const firebase = require('firebase');
 firebase.initializeApp(config);
 
 const { validateSignupData, validateLoginData, reduceUserDetails } = require('../util/validators');
+const { UserRecordMetadata } = require('firebase-functions/lib/providers/auth');
 
 
 exports.signup = (req, res) => {
@@ -103,6 +104,30 @@ exports.addUserDetails = (req,res) => {
             console.error(err);
             return res.status(500).json({error: err.code})
 
+        })
+}
+
+// get own userdetails 
+
+exports.getAuthenticatedUser = (req, res) => {
+    let userData = {};
+    db.doc(`users/${req.user.handle}`).get()
+        .then(doc => {
+            if(doc.exists){
+                userData.credentials = doc.data();
+                return db.collection('likes').where('userHandle', '==', req.user.handle).get()
+            }
+        })
+        .then(data => {
+            userData.likes = [];
+            data.forEach(doc => {
+                userData.likes.push(doc.data());
+            })
+            return res.json(userData);
+        })
+        .catch(err => {
+            console.error(err);
+            return res.status(500).json({ error: err.code })
         })
 }
 
