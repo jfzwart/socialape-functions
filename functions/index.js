@@ -6,7 +6,8 @@ const FBAuth = require('./util/fbAuth')
 const {
     getAllScreams,
     postOneScream,
-    getScream
+    getScream,
+    commentOnScream
 } = require('./handlers/screams');
 
 const { 
@@ -30,6 +31,7 @@ app.get('/scream/:screamId', getScream);
 // TODO: like scream
 // TODO: unlike scream
 // TODO: comment on scream
+app.post('/scream/:screamId/comment', FBAuth, commentOnScream);
 
 //signup route
 app.post('/signup', signup ) // validates if user already exists. If new user, return a token, if user already exist throw an error
